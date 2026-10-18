@@ -1,0 +1,10 @@
+feast[redis,gcp]==0.66.0
+pyspark==3.5.8
+pandas>=2.2,<3
+pyarrow>=14,<22
+confluent-kafka>=2.6,<3
+fastapi>=0.115,<1
+uvicorn>=0.30,<1
+google-cloud-storage>=2.18,<4
+pytest>=8,<9
+ruff>=0.9,<1
