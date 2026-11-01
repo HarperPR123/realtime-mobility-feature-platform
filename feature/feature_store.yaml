@@ -1,9 +1,12 @@
 project: mobility_features
 registry: /app/data/registry/registry.db
 provider: local
-offline_store: 
+
+offline_store:
   type: file
-onlline_store:
+
+online_store:
   type: redis
   connection_string: redis:6379
+
 entity_key_serialization_version: 3

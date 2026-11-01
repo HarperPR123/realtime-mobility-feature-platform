@@ -6,7 +6,7 @@ from pathlib import Path
 import pandas as pd
 
 HISTORY = Path('/app/data/history/chunks')
-SNAPSHOT = Path('/app/data/offline/zone_trip')
+SNAPSHOT = Path('/app/data/offline/zone_trip_history.parquet')
 FLOAT_COLUMNS = ['last_trip_distance','last_trip_fare','last_trip_duration_s','last_fare_per_mile','published_at_unix']
 
 
@@ -37,8 +37,8 @@ def compact():
     else:
         frame = empty_history()
     temporary = SNAPSHOT.with_suffix(".tmp")
-    frame.to_parquet(temporary,index=False)
-    os.replace(temporary,SNAPSHOT)
+    frame.to_parquet(temporary, index=False)
+    os.replace(temporary, SNAPSHOT)
     print({"input_files":len(files),"distinct_events":len(frame)})
     return len(frame)
 
