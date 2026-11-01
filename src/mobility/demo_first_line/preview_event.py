@@ -1,3 +1,7 @@
+# Produces a single preview event to validate the event schema and Kafka payload.
+
+
+
 import json
 from datetime import datetime, timezone
 from pathlib import Path

@@ -1,3 +1,6 @@
+# Publishes validated trip events to the Kafka trip-events topic.
+
+
 import os
 import pyarrow.parquet as pq
 import argparse

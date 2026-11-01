@@ -1,3 +1,5 @@
+# Consumes topic messages for debugging and writes a traceable evidence file.
+
 import argparse
 import os
 from confluent_kafka import Consumer

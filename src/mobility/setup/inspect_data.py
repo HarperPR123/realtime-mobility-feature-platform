@@ -1,3 +1,5 @@
+# Downloads and previews the raw taxi source data for schema and evidence checks.
+
 import hashlib
 import json
 from urllib.request import urlretrieve

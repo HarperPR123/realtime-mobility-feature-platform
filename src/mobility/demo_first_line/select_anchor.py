@@ -1,3 +1,5 @@
+# Selects a representative input row and computes the anchor expected feature values.
+
 import json
 from pathlib import Path
 import pyarrow.parquet as pq

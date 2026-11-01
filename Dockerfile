@@ -10,6 +10,6 @@ WORKDIR /app
 COPY requirements.lock /app/requirements.lock
 RUN pip install --no-cache-dir -r requirements.lock && pip check
 COPY src /app/src
-COPY feature_repo /app/feature_repo
+COPY feature /app/feature
 COPY tests /app/tests
 CMD ["python", "-c", "print('mobility image ready')"]

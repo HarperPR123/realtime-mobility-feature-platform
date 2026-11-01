@@ -1,3 +1,5 @@
+# Verifies a consumed event against the expected feature anchor and business rules.
+
 import json
 import math
 from pathlib import Path

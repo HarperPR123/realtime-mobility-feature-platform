@@ -1,3 +1,5 @@
+# Builds canonical trip event payloads for Kafka ingestion.
+
 def build_event(row, run_id, now):
     return {
         "schema_version": 1,

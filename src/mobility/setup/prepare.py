@@ -1,3 +1,5 @@
+# Cleans a single month of taxi data and writes the prepared parquet output.
+
 import json
 from pathlib import Path
 from urllib.request import urlretrieve

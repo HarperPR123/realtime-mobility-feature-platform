@@ -1,3 +1,23 @@
+name: mobility
+
+x-app: &app
+  build: .
+  image: mobility-app:dev
+  working_dir: /app
+  volumes:
+    - ./data:/app/data
+    - ./feature:/app/feature
+  environment:
+    KAFKA_BOOTSTRAP: broker:29092
+    FEAST_REPO: /app/feature
+    PYTHONPATH: /app/src
+  depends_on:
+    broker: 
+      condition: service_healthy
+    redis:
+      condition: service_healthy
+
+
 services:
   broker:
     image: apache/kafka:4.1.2
@@ -22,5 +42,80 @@ services:
       interval: 10s
       timeout: 10s
       retries: 12
+
+  redis:
+    image: redis:7.4
+    command: ["redis-server","--appendonly","yes"]
+    ports:
+      - "127.0.0.1:16379:6379"
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD","redis-cli","ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+
+
+  app:
+    <<: *app
+    profiles: ["tools"]
+
+  spark:
+    <<: *app
+    profiles: ["stream"]
+    command: 
+     - spark-submit
+     - --master
+     - local[2]
+     - --packages
+     - org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.8
+     - /app/src/mobility/stream_job.py
+
+  feature-consumer:
+    <<: *app
+    profiles: ["stream"]
+    command: ["python","-m","mobility.feature_consumer"]
+    restart: on-failure
+
+  api:
+    <<: *app
+    profiles: ["stream"]
+    command: ["uvicorn","mobility.api:app","--host","0.0.0.0","--port","8000"]
+    ports:
+      - "127.0.0.1:8000:8000"
+    restart: on-failure
+
+  airflow:
+    profiles: ["orchestration"]
+    build:
+      context: .
+      dockerfile: Dockerfile.airflow
+    user: "${AIRFLOW_UID:-50000}:0"
+    command: standalone
+    ports:
+      - "127.0.0.1:8080:8080"
+    environment:
+      AIRFLOW_HOME: /opt/airflow
+      AIRFLOW__CORE__LOAD__EXAMPLES: "false"
+      PYTHONPATH: /app/src
+      GCP_PROJECT: ${GCP_PROJECT:-}
+      GCS_BUCKET: ${GCS_BUCKET:-}
+      GOOGLE_APPLICATION_CREDENTIALS: /adc/application_default_credentials.json
+    volumes:
+      - ./data/airflow:/opt/airflow
+      - ./dags:/opt/airflow/dags:ro
+      - ./src:/app/src:ro
+      - ./data:/app/data
+      - ${HOME}/.config/gcloud:/adc:ro
+
 volumes:
   kafka-data:
+  redis-data:
+
+
+
+    
+
+
+
